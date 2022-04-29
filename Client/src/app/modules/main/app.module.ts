@@ -5,8 +5,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-
-import { UserModule } from '../user/user.module';
 import { CoreModule } from '../core/core.module';
 
 @NgModule({
@@ -18,8 +16,7 @@ import { CoreModule } from '../core/core.module';
     ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
-    CoreModule,
-    UserModule
+    CoreModule
   ],
   providers: [],
   bootstrap: [AppComponent]
