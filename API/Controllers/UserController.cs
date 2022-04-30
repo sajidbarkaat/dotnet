@@ -20,8 +20,8 @@ public class UserController : Controller
         this.logger = logger;
     }
 
-    [HttpGet]  
-    public async Task<ActionResult<IEnumerable<TUUser>>> GetAll() {
+    [HttpGet("all")]  
+    public async Task<ActionResult<IEnumerable<TUUser>>> Get() {
         return await this.tuDataContext.TUUsers.ToListAsync();
     }
 }
