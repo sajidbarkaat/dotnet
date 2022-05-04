@@ -17,5 +17,5 @@ public class TUDataContext: DbContext
         options.UseSqlServer(Configuration.GetConnectionString("ApiDatabase"));
     }
 
-    public DbSet<TUUser> TUUsers {get; set;}
+    public DbSet<UserEntity> Users {get; set;}
 }
