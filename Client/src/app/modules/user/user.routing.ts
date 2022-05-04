@@ -5,13 +5,8 @@ import { UserSignupComponent } from "./user-signup/user-signup.component";
 import { UserManagerComponent } from "./user-manager/user-manager.component";
 
 const routes: Routes = [
-    {
-        path: '',
-        component: UserManagerComponent,
-        children: [
-            { path: 'signup', component: UserSignupComponent }
-        ]
-    }
+    { path: '', component: UserManagerComponent }, 
+    { path: 'signup', component: UserSignupComponent }
 ];
 @NgModule({
     imports: [RouterModule.forChild(routes)],
