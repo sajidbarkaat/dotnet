@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace API.Controllers;
 
-public class UserController: Controller
+public class UserController: ControllerBase
 {
     protected readonly ILogger<UserController> logger;
     protected readonly TUDataContext tuDataContext;
@@ -22,8 +22,8 @@ public class UserController: Controller
         this.logger = logger;
         this.userService = userService;
     }     
-    
-    [Authorize]
+
+    [Authorize]    
     [HttpGet("all")]  
     public async Task<ActionResult<IEnumerable<UserEntity>>> Get() {
         var userList =  await this.userService.GetAll();        

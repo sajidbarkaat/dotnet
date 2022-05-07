@@ -8,13 +8,14 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
+builder.Services.AddDbContext<TUDataContext>();
+
 //
 //DI for application services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
-// Add services to the container.
-builder.Services.AddDbContext<TUDataContext>();
 builder.Services.AddCors();
 builder.Services.AddControllers().AddJsonOptions(jsonOptions =>
 {

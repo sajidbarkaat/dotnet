@@ -12,8 +12,7 @@ import { CoreModule } from '../core/core.module';
     AppComponent
   ],
   imports: [
-    BrowserModule,
-    ReactiveFormsModule,
+    BrowserModule,    
     HttpClientModule,
     AppRoutingModule,
     CoreModule

@@ -47,7 +47,7 @@ public class UserService : IUserService
     //     return getUser(id);
     // }
 
-    public async void Register(UserDto userDto)
+    public void Register(UserDto userDto)
     {
         using var hmac = new HMACSHA512();
 
@@ -60,7 +60,7 @@ public class UserService : IUserService
         };
 
         this.tuDataContext.Users.Add(userEntity);
-        await this.tuDataContext.SaveChangesAsync();
+        this.tuDataContext.SaveChanges();
     }
 
     // public void Update(int id, UpdateRequest model)
