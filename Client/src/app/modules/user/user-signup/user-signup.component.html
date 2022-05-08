@@ -7,17 +7,17 @@
         <form [formGroup]="signupForm" (ngSubmit)="onSignupHandler()">
           <div class="row g-3">
             <div class="col-sm-6">
-              <label for="firstName" class="form-label">First name</label>
-              <input type="text" class="form-control" id="firstName" formControlName="firstName">
-              <div *ngIf="!signupForm.get('firstName')?.valid && signupForm.get('firstName')?.touched">
+              <label for="fName" class="form-label">First name</label>
+              <input type="text" class="form-control" id="fName" formControlName="fName">
+              <div *ngIf="!signupForm.get('fName')?.valid && signupForm.get('fName')?.touched">
                 Your first name is required.
               </div>
             </div>
 
             <div class="col-sm-6">
-              <label for="lastName" class="form-label">Last name</label>
-              <input type="text" class="form-control" id="lastName" formControlName="lastName">
-              <div *ngIf="!signupForm.get('lastName')?.valid && signupForm.get('lastName')?.touched">
+              <label for="lName" class="form-label">Last name</label>
+              <input type="text" class="form-control" id="lName" formControlName="lName">
+              <div *ngIf="!signupForm.get('lName')?.valid && signupForm.get('lName')?.touched">
                 Your last name is required.
               </div>
             </div>
@@ -45,7 +45,7 @@
 
           <hr class="my-4">
 
-          <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to Signup</button>
+          <button class="w-100 btn btn-primary btn-lg" type="submit" #sBtnSignupForm>Continue to Signup</button>
         </form>
       </div>
     </div>

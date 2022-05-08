@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'user-signup',
@@ -8,23 +9,28 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class UserSignupComponent implements OnInit{
   signupForm!: FormGroup;
+  @ViewChild('sBtnSignupForm') sBtnSignupForm!: ElementRef;
 
-  constructor(){}
+  constructor(private userService: UserService){}
 
   ngOnInit(): void {
     this.signupForm = new FormGroup({
-      'firstName': new FormControl('', [Validators.required]),
-      'lastName': new FormControl('', [Validators.required]),
+      'fName': new FormControl('', [Validators.required]),
+      'lName': new FormControl('', [Validators.required]),
       'username': new FormControl('', [Validators.required]),
       'password': new FormControl('', [Validators.required]),      
     });
   }
 
-  onSignupHandler(): void {
+  async onSignupHandler(): Promise<void> {
     if(!this.signupForm.valid) {
       return;
     }
     
-    console.log(this.signupForm.value);
+    this.sBtnSignupForm.nativeElement.disabled = true;
+
+    await this.userService.register(this.signupForm.value);
+
+    this.sBtnSignupForm.nativeElement.disabled = false;
   }
 }

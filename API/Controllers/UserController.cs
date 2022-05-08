@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace API.Controllers;
 
+[Route("api/[controller]")]
 public class UserController: ControllerBase
 {
     protected readonly ILogger<UserController> logger;

@@ -13,8 +13,8 @@ builder.Services.AddDbContext<TUDataContext>();
 
 //
 //DI for application services
-builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddCors();
 builder.Services.AddControllers().AddJsonOptions(jsonOptions =>

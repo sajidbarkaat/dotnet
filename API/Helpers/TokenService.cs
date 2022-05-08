@@ -20,7 +20,7 @@ public class TokenService : ITokenService
     private readonly SymmetricSecurityKey symmetricSecurityKey;
     
     public TokenService(IConfiguration configuration) {
-        this.symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenKey"]));
+        this.symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
 
     }
     public string CreateToken(UserEntity userEntity)

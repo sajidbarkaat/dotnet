@@ -10,58 +10,86 @@ using API.Entities;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using API.Helpers;
 
 namespace API.Services;
 
 public interface IUserService
 {
-    //AuthenticateResponse Authenticate(AuthenticateRequest model);
-    Task<IEnumerable<UserEntity>> GetAll();
-    //TUUserDto GetById(int id);
+    Task<IEnumerable<UserEntity>> GetAll();    
     void Register(UserDto model);
+    Task<string> Login(LoginCredentialsDto model);
+    
+    //AuthenticateResponse Authenticate(AuthenticateRequest model);
+    //TUUserDto GetById(int id);
     // void Update(int id, TUUserDto model);
     // void Delete(int id);
 }
 
 public class UserService : IUserService
 {
-    
-    //private IJwtUtils _jwtUtils;
-    //private readonly IMapper _mapper;
-
     protected readonly ILogger<UserService> logger;
-    protected readonly TUDataContext tuDataContext;
-    public UserService(TUDataContext dataContext, ILogger<UserService> logger)
+    protected readonly TUDataContext dataContext;
+
+    protected readonly ITokenService tokenService;
+    public UserService(TUDataContext dataContext, ILogger<UserService> logger, ITokenService tokenService)
     {
-        this.tuDataContext = dataContext;
+        this.dataContext = dataContext;
         this.logger = logger;
+        this.tokenService = tokenService;
     }     
 
     public async Task<IEnumerable<UserEntity>> GetAll()
     {
-       return await this.tuDataContext.Users.ToListAsync();
+       return await this.dataContext.Users.ToListAsync();
     }
-
-    // public User GetById(int id)
-    // {
-    //     return getUser(id);
-    // }
-
+    
     public void Register(UserDto userDto)
     {
         using var hmac = new HMACSHA512();
 
         UserEntity userEntity = new UserEntity {
-            FName = userDto.FName,
-            LName = userDto.LName,
-            Username = userDto.Username,
-            Password = hmac.ComputeHash(Encoding.UTF8.GetBytes(userDto.Password)),
+            FName = userDto.fName,
+            LName = userDto.lName,
+            Username = userDto.username,
+            Password = hmac.ComputeHash(Encoding.UTF8.GetBytes(userDto.password)),
             Salt = hmac.Key
         };
 
-        this.tuDataContext.Users.Add(userEntity);
-        this.tuDataContext.SaveChanges();
+        this.dataContext.Users.Add(userEntity);
+        this.dataContext.SaveChanges();
     }
+
+    public async Task<String> Login(LoginCredentialsDto loginDto) 
+    {
+        var userDBRecord = await this.dataContext.Users.SingleOrDefaultAsync(user => user.Username == loginDto.Username);
+
+        if(userDBRecord == null) 
+        {
+            return null;
+        }
+
+        using var hmac = new HMACSHA512(userDBRecord.Salt);
+        var hashedPassword = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
+
+        for (int i = 0; i < hashedPassword.Length; i++)        
+        {
+            if(hashedPassword[i] != userDBRecord.Password[i]) 
+            {
+                return null;
+            }
+        } 
+
+        return tokenService.CreateToken(userDBRecord);
+    }
+
+    //private IJwtUtils _jwtUtils;
+    //private readonly IMapper _mapper;
+
+    // public User GetById(int id)
+    // {
+    //     return getUser(id);
+    // }
 
     // public void Update(int id, UpdateRequest model)
     // {

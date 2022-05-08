@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
+
+[Route("api/[controller]")]
 public class AccountController : ControllerBase
 {
     private IUserService userService;
@@ -29,10 +31,10 @@ public class AccountController : ControllerBase
     }
 
 
-    // [AllowAnonymous]
-    // [HttpPost("Login")]
-    // public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto loginDto)
-    // {
-
-    // }
+    [AllowAnonymous]
+    [HttpPost("Login")]
+    public async Task<ActionResult<String>> Login([FromBody] LoginCredentialsDto loginDto)
+    {        
+        return await this.userService.Login(loginDto);
+    }
 }
