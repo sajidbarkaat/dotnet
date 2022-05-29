@@ -57,6 +57,40 @@ namespace API.Data.Migrations
 
                     b.ToTable("Users");
                 });
+
+            modelBuilder.Entity("API.Entities.SAP_PriceListEntity", b =>
+            {
+                b.Property<int>("PriceList_Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PriceList_Id"), 1L, 1);
+
+                b.Property<string>("PriceList_Code")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("PriceList_Name")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("Item_Code")
+                   .IsRequired()
+                   .HasColumnType("nvarchar(max)");
+
+                b.Property<double>("UnitPrice")
+                    .IsRequired()
+                    .HasColumnType("decimal(18,6)");
+
+                b.HasKey("PriceList_Id");
+
+                b.HasIndex("PriceList_Code")
+                    .IsUnique();
+
+                b.ToTable("SAP_PriceList");
+            });
+
+
 #pragma warning restore 612, 618
         }
     }
