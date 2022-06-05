@@ -90,6 +90,113 @@ namespace API.Data.Migrations
                 b.ToTable("SAP_PriceList");
             });
 
+            modelBuilder.Entity("API.Entities.SAP_DeliveryNoteHeaderEntity", b =>
+            {
+                b.Property<int>("DN_Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DN_Id"), 1L, 1);
+
+                b.Property<string>("DN_No")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("DN_Series")
+                    .IsRequired()
+                    .HasColumnType("int");
+
+                b.Property<string>("DN_DocEntry")
+                  .IsRequired()
+                  .HasColumnType("int");
+
+                b.Property<string>("DN_DocStatus")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("DN_Date")
+                    .IsRequired()
+                    .HasColumnType("datetime");
+
+                b.Property<string>("DN_DueDate")
+                   .IsRequired()
+                   .HasColumnType("datetime");
+
+                b.Property<string>("DN_PostingDate")
+                  .IsRequired()
+                  .HasColumnType("datetime");
+
+                b.Property<string>("DN_TaxDate")
+                  .IsRequired()
+                  .HasColumnType("datetime");
+
+                b.Property<string>("Cust_Code")
+                   .IsRequired()
+                   .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("Cust_Name")
+                  .IsRequired()
+                  .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("Contct_Code")
+                  .IsRequired()
+                  .HasColumnType("int");
+
+                b.Property<string>("Curr_Type")
+                .IsRequired()
+                .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("Contct_Code")
+                 .IsRequired()
+                 .HasColumnType("int");
+
+                b.Property<string>("Price_Code")
+                 .IsRequired()
+                 .HasColumnType("int");
+
+                b.Property<string>("Ship_Code")
+                 .IsRequired()
+                 .HasColumnType("int");
+
+                b.Property<string>("Ship_Address")
+                .IsRequired()
+                .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("Remarks")
+                .IsRequired()
+                .HasColumnType("nvarchar(max)");
+
+                b.Property<double>("Discount")
+                    .IsRequired()
+                    .HasColumnType("decimal(18,6)");
+
+                b.Property<double>("VAT")
+                   .IsRequired()
+                   .HasColumnType("decimal(18,6)");
+
+                b.Property<double>("NetAmount")
+                   .IsRequired()
+                   .HasColumnType("decimal(18,6)");
+
+                b.Property<double>("TotalAmount")
+                   .IsRequired()
+                   .HasColumnType("decimal(18,6)");
+
+                b.Property<string>("DN_OwnerCode")
+                .IsRequired()
+                .HasColumnType("int");
+
+                b.Property<string>("DN_Remarks")
+                .IsRequired()
+                .HasColumnType("nvarchar(max)");
+
+                b.HasKey("DN_Id");
+
+                b.HasIndex("DN_No")
+                    .IsUnique();
+
+                b.ToTable("SAP_DeliveryNote_Header");
+            });
 
 #pragma warning restore 612, 618
         }

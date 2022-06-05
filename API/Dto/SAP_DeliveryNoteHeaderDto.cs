@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
-namespace API.Entities;
-
-[Index(nameof(DN_No), IsUnique = true)]
-public class SAP_DeliveryNoteHeader_Entity
+namespace API.Dto;
+public class SAP_DeliveryNoteHeaderDto
 {
-    [Key]
+    [Required]
     public int DN_Id { get; set; }
 
     [Required]

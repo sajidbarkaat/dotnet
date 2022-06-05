@@ -4,9 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Dto
-{
-    public class PriceListDto
+namespace API.Dto;
+public class PriceListDto
     {
         [Required]
         public int PriceList_Id { get; set; }
@@ -23,4 +22,4 @@ namespace API.Dto
         [Required]
         public double UnitPrice { get; set; }
     }
-}
+
