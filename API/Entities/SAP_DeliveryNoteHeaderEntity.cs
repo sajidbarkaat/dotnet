@@ -20,6 +20,9 @@ public class SAP_DeliveryNoteHeader_Entity
     public int DN_Series { get; set; }
 
     [Required]
+    public int DN_DocEntry { get; set; }
+
+    [Required]
     public string DN_DocStatus { get; set; }
 
     [Required]

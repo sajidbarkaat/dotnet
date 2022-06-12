@@ -17,6 +17,9 @@ public class SAP_DeliveryNoteHeaderDto
     public int DN_Series { get; set; }
 
     [Required]
+    public int DN_DocEntry { get; set; }
+
+    [Required]
     public string DN_DocStatus { get; set; }
 
     [Required]

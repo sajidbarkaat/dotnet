@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using API.Dto;
 using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +33,14 @@ public class SAPDNHeaderController : ControllerBase
     {
         var DNHeader = await this.DNHeaderService.GetAll();
         return new ActionResult<IEnumerable<SAP_DeliveryNoteHeader_Entity>>(DNHeader);
+    }
+
+    //[Authorize]    
+    [HttpPost("Save")]
+    public IActionResult Save([FromBody] SAP_DeliveryNoteHeaderDto DNHeaderDto)
+    {
+        this.DNHeaderService.Save(DNHeaderDto);
+        return Ok(new { message = "Save successful" });
     }
 
 }
