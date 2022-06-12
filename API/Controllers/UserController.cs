@@ -29,5 +29,13 @@ public class UserController: ControllerBase
     public async Task<ActionResult<IEnumerable<UserEntity>>> Get() {
         var userList =  await this.userService.GetAll();        
         return new ActionResult<IEnumerable<UserEntity>>(userList);
-    }    
+    }
+
+    ////[Authorize]
+    [HttpPost("save")]
+    public async Task<ActionResult<IEnumerable<UserEntity>>> SaveUser([FromBody] UserEntity cmd)
+    {
+        var userList = await this.userService.GetAll();
+        return new ActionResult<IEnumerable<UserEntity>>(userList);
+    }
 }

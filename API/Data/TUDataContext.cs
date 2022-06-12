@@ -18,4 +18,9 @@ public class TUDataContext: DbContext
     }
 
     public DbSet<UserEntity> Users {get; set;}
+
+    public DbSet<SAP_PriceListEntity> SAP_PriceList { get; set; }
+
+    public DbSet<SAP_DeliveryNoteHeader_Entity> SAP_DeliveryNote_Header { get; set; }
+
 }

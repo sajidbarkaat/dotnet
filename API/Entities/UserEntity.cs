@@ -24,6 +24,6 @@ public class UserEntity
     [Required]
     public byte[] Password { get; set;}
     
-    [Required]
+    //[Required]
     public byte[] Salt { get; set; }
 }

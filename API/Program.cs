@@ -15,6 +15,9 @@ builder.Services.AddDbContext<TUDataContext>();
 //DI for application services
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ISAPPriceListService, SAP_PriceListService>();
+builder.Services.AddScoped<ISAPDeliveryNoteHeaderService, SAP_DeliveryNoteHeaderService>();
+
 
 builder.Services.AddCors();
 builder.Services.AddControllers().AddJsonOptions(jsonOptions =>
