@@ -19,7 +19,7 @@
             <ng-container *ngIf="!isLoggedIn">
                 <button type="button" class="btn btn-outline-primary me-2">Login</button>
             </ng-container>
-            <button type="button" class="btn btn-primary">Sign-up</button>
+            <button type="button" class="btn btn-primary" (click)="gotoSignupHandler()">Sign-up</button>
         </div>
     </header>
 </div>

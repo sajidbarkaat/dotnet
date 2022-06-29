@@ -24,17 +24,23 @@ public class AccountController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("signup")]
-    public IActionResult Signup([FromBody] UserDto userDto)
+    public async Task<ActionResult<UserRegisteredDto>> SignupAsync([FromBody] UserDto userDto)
     {
-        this.userService.Register(userDto);
-        return Ok(new { message = "Signup successful" });
+        UserRegisteredDto dto =  await this.userService.Register(userDto);
+        return Ok(dto);
     }
 
 
     [AllowAnonymous]
     [HttpPost("Login")]
-    public async Task<ActionResult<String>> Login([FromBody] LoginCredentialsDto loginDto)
+    public async Task<ActionResult<UserAuthenticatedDto>> Login([FromBody] LoginCredentialsDto loginDto)
     {        
-        return await this.userService.Login(loginDto);
+        UserAuthenticatedDto dto = await this.userService.Login(loginDto);
+
+        if(dto == null) {
+            return NotFound();
+        }
+        
+        return Ok(dto);
     }
 }

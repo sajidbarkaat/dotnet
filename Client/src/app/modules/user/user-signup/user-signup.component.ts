@@ -23,7 +23,7 @@ export class UserSignupComponent implements OnInit{
   }
 
   async onSignupHandler(): Promise<void> {
-    if(!this.signupForm.valid) {
+    if(this.signupForm.invalid) {
       return;
     }
     

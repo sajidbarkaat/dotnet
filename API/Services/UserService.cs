@@ -11,16 +11,17 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using API.Helpers;
+using API.Repositories;
+using AutoMapper;
 
 namespace API.Services;
 
 public interface IUserService
 {
     Task<IEnumerable<UserEntity>> GetAll();    
-    void Register(UserDto model);
-    Task<string> Login(LoginCredentialsDto model);
-    
-    //AuthenticateResponse Authenticate(AuthenticateRequest model);
+    Task<UserRegisteredDto> Register(UserDto model);
+    Task<UserAuthenticatedDto> Login(LoginCredentialsDto model);    
+   
     //TUUserDto GetById(int id);
     // void Update(int id, TUUserDto model);
     // void Delete(int id);
@@ -28,23 +29,31 @@ public interface IUserService
 
 public class UserService : IUserService
 {
-    protected readonly ILogger<UserService> logger;
-    protected readonly TUDataContext dataContext;
-
+    protected readonly ILogger<UserService> logger;    
     protected readonly ITokenService tokenService;
-    public UserService(TUDataContext dataContext, ILogger<UserService> logger, ITokenService tokenService)
+    protected readonly IUserRespository userRepository;
+
+    protected readonly IMapper mapper;
+
+    
+    public UserService(IUserRespository userRepository,                         
+                        ITokenService tokenService,
+                        ILogger<UserService> logger, 
+                        IMapper mapper)
     {
-        this.dataContext = dataContext;
-        this.logger = logger;
+        this.userRepository = userRepository;
         this.tokenService = tokenService;
+        this.logger = logger;
+        this.mapper = mapper;        
     }     
 
     public async Task<IEnumerable<UserEntity>> GetAll()
     {
-       return await this.dataContext.Users.ToListAsync();
+       IEnumerable<UserEntity> userList =  await this.userRepository.FetchAll();
+       return userList;
     }
     
-    public void Register(UserDto userDto)
+    public async Task<UserRegisteredDto> Register(UserDto userDto)
     {
         using var hmac = new HMACSHA512();
 
@@ -56,13 +65,13 @@ public class UserService : IUserService
             Salt = hmac.Key
         };
 
-        this.dataContext.Users.Add(userEntity);
-        this.dataContext.SaveChanges();
+        await this.userRepository.Create(userEntity);
+        return this.mapper.Map<UserRegisteredDto>(userEntity);
     }
 
-    public async Task<String> Login(LoginCredentialsDto loginDto) 
+    public async Task<UserAuthenticatedDto> Login(LoginCredentialsDto loginDto) 
     {
-        var userDBRecord = await this.dataContext.Users.SingleOrDefaultAsync(user => user.Username == loginDto.Username);
+        var userDBRecord = await this.userRepository.FindByUsername(loginDto.Username);
 
         if(userDBRecord == null) 
         {
@@ -80,7 +89,9 @@ public class UserService : IUserService
             }
         } 
 
-        return tokenService.CreateToken(userDBRecord);
+        string token = tokenService.CreateToken(userDBRecord);
+        UserAuthenticatedDto dto = new UserAuthenticatedDto(userDBRecord.Id, loginDto.Username, token);
+        return dto;
     }
 
     //private IJwtUtils _jwtUtils;
