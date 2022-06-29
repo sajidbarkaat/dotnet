@@ -23,4 +23,6 @@ public class TUDataContext: DbContext
 
     public DbSet<SAP_DeliveryNoteHeader_Entity> SAP_DeliveryNote_Header { get; set; }
 
+    public DbSet<SAPDeliveryNoteRowEntity> SAPDeliveryNoteRow { get; set; }
+
 }

@@ -17,6 +17,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ISAPPriceListService, SAP_PriceListService>();
 builder.Services.AddScoped<ISAPDeliveryNoteHeaderService, SAP_DeliveryNoteHeaderService>();
+builder.Services.AddScoped<ISAPDeliveryNoteRowService, SAPDeliveryNoteRowService>();
 
 
 builder.Services.AddCors();
