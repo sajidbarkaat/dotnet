@@ -5,7 +5,7 @@ import { AuthenticationService } from '../core/authentication.service';
 @Component({
   selector: 'header-component',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
     public isLoggedIn!: boolean;

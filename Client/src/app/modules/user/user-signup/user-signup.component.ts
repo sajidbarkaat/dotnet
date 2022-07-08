@@ -5,7 +5,7 @@ import { UserService } from '../services/user.service';
 @Component({
   selector: 'user-signup',
   templateUrl: './user-signup.component.html',
-  styleUrls: ['./user-signup.component.css']
+  styleUrls: ['./user-signup.component.scss']
 })
 export class UserSignupComponent implements OnInit{
   signupForm!: FormGroup;

@@ -4,7 +4,7 @@ import { UserService } from '../services/user.service';
 @Component({
   selector: 'user-manager',
   templateUrl: './user-manager.component.html',
-  styleUrls: ['./user-manager.component.css']
+  styleUrls: ['./user-manager.component.scss']
 })
 export class UserManagerComponent implements OnInit {
   userList!: any[];
