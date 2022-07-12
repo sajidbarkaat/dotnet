@@ -8,11 +8,21 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using API.Repositories;
+using API.Entities;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<TUDataContext>();
+builder.Services.AddIdentityCore<UserEntity>(opt => {
+            opt.Password.RequireNonAlphanumeric = false;
+        })
+        .AddRoles<RoleEntity>()
+        .AddRoleManager<RoleManager<RoleEntity>>()
+        .AddSignInManager<SignInManager<UserEntity>>()
+        .AddRoleValidator<RoleValidator<RoleEntity>>()
+        .AddEntityFrameworkStores<TUDataContext>();         
 
 //
 //DI for application services

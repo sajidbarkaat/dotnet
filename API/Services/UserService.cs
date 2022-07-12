@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using API.Helpers;
 using API.Repositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 
 namespace API.Services;
 
@@ -32,19 +33,17 @@ public class UserService : IUserService
     protected readonly ILogger<UserService> logger;    
     protected readonly ITokenService tokenService;
     protected readonly IUserRespository userRepository;
-
     protected readonly IMapper mapper;
-
-    
     public UserService(IUserRespository userRepository,                         
                         ITokenService tokenService,
                         ILogger<UserService> logger, 
-                        IMapper mapper)
+                        IMapper mapper
+                        )
     {
         this.userRepository = userRepository;
         this.tokenService = tokenService;
         this.logger = logger;
-        this.mapper = mapper;        
+        this.mapper = mapper;
     }     
 
     public async Task<IEnumerable<UserEntity>> GetAll()
@@ -55,42 +54,40 @@ public class UserService : IUserService
     
     public async Task<UserRegisteredDto> Register(UserDto userDto)
     {
-        using var hmac = new HMACSHA512();
 
         UserEntity userEntity = new UserEntity {
-            FName = userDto.fName,
-            LName = userDto.lName,
-            Username = userDto.username,
-            Password = hmac.ComputeHash(Encoding.UTF8.GetBytes(userDto.password)),
-            Salt = hmac.Key
+            FName = userDto.FName,
+            LName = userDto.LName,
+            UserName = userDto.UserName.ToLower(),
+
         };
 
-        await this.userRepository.Create(userEntity);
+        var output = await this.userRepository.Create(userEntity, userDto.Password);
+
+        if(!output.Succeeded) {
+            return null;
+        }
+
         return this.mapper.Map<UserRegisteredDto>(userEntity);
     }
 
     public async Task<UserAuthenticatedDto> Login(LoginCredentialsDto loginDto) 
     {
-        var userDBRecord = await this.userRepository.FindByUsername(loginDto.Username);
+        var userDBRecord = await this.userRepository.FindByUsername(loginDto.UserName.ToLower());
 
         if(userDBRecord == null) 
         {
             return null;
         }
 
-        using var hmac = new HMACSHA512(userDBRecord.Salt);
-        var hashedPassword = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
+        var output = await this.userRepository.CheckPassword(userDBRecord, loginDto.Password);
 
-        for (int i = 0; i < hashedPassword.Length; i++)        
-        {
-            if(hashedPassword[i] != userDBRecord.Password[i]) 
-            {
-                return null;
-            }
-        } 
-
+        if(!output.Succeeded) {
+            return null;
+        }        
+        
         string token = tokenService.CreateToken(userDBRecord);
-        UserAuthenticatedDto dto = new UserAuthenticatedDto(userDBRecord.Id, loginDto.Username, token);
+        UserAuthenticatedDto dto = new UserAuthenticatedDto(userDBRecord.Id, loginDto.UserName, token);
         return dto;
     }
 

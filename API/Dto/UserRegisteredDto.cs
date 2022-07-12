@@ -8,13 +8,13 @@ namespace API.Dto;
 
 public class UserRegisteredDto
 {
-    public int id { get; set; }
+    public int Id { get; set; }
     [Required]
-    public string fName { get; set; }
+    public string FName { get; set; }
 
     [Required]
-    public string lName { get; set; }
+    public string LName { get; set; }
 
     [Required]
-    public string username { get; set; }
+    public string UserName { get; set; }
 }

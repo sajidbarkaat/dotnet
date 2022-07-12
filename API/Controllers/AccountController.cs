@@ -24,7 +24,7 @@ public class AccountController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("signup")]
-    public async Task<ActionResult<UserRegisteredDto>> SignupAsync([FromBody] UserDto userDto)
+    public async Task<ActionResult<UserRegisteredDto>> Signup([FromBody] UserDto userDto)
     {
         UserRegisteredDto dto =  await this.userService.Register(userDto);
         return Ok(dto);

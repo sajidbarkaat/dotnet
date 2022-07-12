@@ -9,7 +9,7 @@ namespace API.Dto;
 public class LoginCredentialsDto
 {     
     [Required]
-    public string Username { get; set; }
+    public string UserName { get; set; }
 
     [Required]
     public string Password { get; set; }

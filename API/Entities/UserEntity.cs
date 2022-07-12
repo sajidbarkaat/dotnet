@@ -4,28 +4,20 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Entities;
 
 [Table("Users")]
-[Index(nameof(Username), IsUnique=true)]
-public class UserEntity
+public class UserEntity: IdentityUser<int>
 {
-    public int Id { get; set; }
-
     [Required]
     public string FName { get; set; }    
     
     [Required]
     public string LName { get; set; }
 
-    [Required]
-    public string Username { get; set; }                     
-
-    [Required]
-    public byte[] Password { get; set;}
+    public ICollection<UserRoleEntity> UserRoles { get; set; }
     
-    [Required]
-    public byte[] Salt { get; set; }
 }
