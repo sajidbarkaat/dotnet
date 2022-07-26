@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using API.Dto;
 using API.Entities;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 
 namespace API.Helpers;
 
@@ -13,5 +14,6 @@ public class AutoMapperProfiles: Profile
     public AutoMapperProfiles() {
         CreateMap<UserEntity, UserRegisteredDto>();
         CreateMap<UserEntity, UserAuthenticatedDto>();        
+        CreateMap<IdentityUser, UserRegisteredDto>();
     }    
 }

@@ -8,20 +8,16 @@ namespace API.Dto;
 
 public class UserAuthenticatedDto
 {
-    public UserAuthenticatedDto(int id, string username, string token)
-    {
-        this.id = id;
-        this.username = username;
-        this.token = token;
-    }
+    public UserAuthenticatedDto(string username, string token)
+    {        
+        this.UserName = username;
+        this.Token = token;
+    }   
 
     [Required]
-    public int id;
+    public string UserName { get; set; }
 
     [Required]
-    public string username { get; set; }
-
-    [Required]
-    public string token { get; set; }
+    public string Token { get; set; }
 }
 

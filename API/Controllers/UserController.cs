@@ -6,10 +6,13 @@ using API.Data;
 using API.Entities;
 using API.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace API.Controllers;
 
+[Authorize]
+[ApiController]
 [Route("api/[controller]")]
 public class UserController: ControllerBase
 {
@@ -24,10 +27,11 @@ public class UserController: ControllerBase
         this.userService = userService;
     }     
 
-    [Authorize]    
+    //[Authorize(Policy = "RequiredSuperAdminRole")]    
+    //[Authorize(Roles = "superadmin")]
     [HttpGet("all")]  
-    public async Task<ActionResult<IEnumerable<UserEntity>>> Get() {
-        var userList =  await this.userService.GetAll();        
-        return new ActionResult<IEnumerable<UserEntity>>(userList);
+    public async Task<ActionResult<IEnumerable<IdentityUser>>> Get() {
+        var userList =  await this.userService.GetAll();                        
+        return new ActionResult<IEnumerable<IdentityUser>>(userList);
     }    
 }

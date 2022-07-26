@@ -9,11 +9,13 @@ using API.Dto;
 using API.Entities;
 using API.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
 [Route("api/[controller]")]
+[ApiController]
 public class AccountController : ControllerBase
 {
     private IUserService userService;
@@ -24,7 +26,7 @@ public class AccountController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("signup")]
-    public async Task<ActionResult<UserRegisteredDto>> Signup([FromBody] UserDto userDto)
+    public async Task<ActionResult<UserRegisteredDto>> Signup([FromBody] UserToRegisterDto userDto)
     {
         UserRegisteredDto dto =  await this.userService.Register(userDto);
         return Ok(dto);

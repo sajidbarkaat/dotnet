@@ -11,39 +11,49 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace API.Helpers;
 
-public interface ITokenService {
-    string CreateToken(UserEntity userEntity);    
+public interface ITokenService
+{
+    string CreateToken(string username, IList<string> userRoles);
 
 }
 
 public class TokenService : ITokenService
 {
     protected readonly SymmetricSecurityKey symmetricSecurityKey;
-    protected readonly  UserManager<UserEntity> userManager;
+    protected readonly IConfiguration configuration;
 
-    
-    public TokenService(IConfiguration configuration, UserManager<UserEntity> userManager) {
-        this.symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
-        this.userManager = userManager;
+    public TokenService(IConfiguration configuration)
+    {
+        this.configuration = configuration;
+        this.symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["Jwt:Key"]));    
     }
-    public string CreateToken(UserEntity userEntity)
+
+    public string CreateToken(string userName, IList<string> userRoles)
     {
         var claims = new List<Claim>
-        {
-            new Claim(JwtRegisteredClaimNames.NameId, userEntity.UserName)
+        {            
+            new Claim(JwtRegisteredClaimNames.NameId, userName),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-        var credentials = new SigningCredentials(this.symmetricSecurityKey, SecurityAlgorithms.HmacSha512Signature);
+        foreach (var userRole in userRoles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, userRole));            
+        }
+
+        var credentials = new SigningCredentials(this.symmetricSecurityKey, SecurityAlgorithms.HmacSha256);  
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddDays(1),
+            Issuer = this.configuration["Jwt:Issuer"],
+            Audience = this.configuration["Jwt:Audience"],
+            Expires = DateTime.Now.AddHours(3),
+            Subject = new ClaimsIdentity(claims),            
             SigningCredentials = credentials
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);       
+        return tokenHandler.WriteToken(token);
     }
 }

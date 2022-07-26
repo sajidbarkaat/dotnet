@@ -14,13 +14,14 @@ using API.Helpers;
 using API.Repositories;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace API.Services;
 
 public interface IUserService
 {
-    Task<IEnumerable<UserEntity>> GetAll();    
-    Task<UserRegisteredDto> Register(UserDto model);
+    Task<IEnumerable<IdentityUser>> GetAll();    
+    Task<UserRegisteredDto> Register(UserToRegisterDto model);
     Task<UserAuthenticatedDto> Login(LoginCredentialsDto model);    
    
     //TUUserDto GetById(int id);
@@ -46,29 +47,27 @@ public class UserService : IUserService
         this.mapper = mapper;
     }     
 
-    public async Task<IEnumerable<UserEntity>> GetAll()
+    public async Task<IEnumerable<IdentityUser>> GetAll()
     {
-       IEnumerable<UserEntity> userList =  await this.userRepository.FetchAll();
+       IEnumerable<IdentityUser> userList =  await this.userRepository.FetchAll();
        return userList;
     }
     
-    public async Task<UserRegisteredDto> Register(UserDto userDto)
+    public async Task<UserRegisteredDto> Register(UserToRegisterDto userDto)
     {
+       IdentityUser user = new IdentityUser {
+        Email = userDto.UserName,
+        SecurityStamp = Guid.NewGuid().ToString(),
+        UserName = userDto.UserName
+       };
 
-        UserEntity userEntity = new UserEntity {
-            FName = userDto.FName,
-            LName = userDto.LName,
-            UserName = userDto.UserName.ToLower(),
-
-        };
-
-        var output = await this.userRepository.Create(userEntity, userDto.Password);
+        var output = await this.userRepository.Create(user, userDto.Password);
 
         if(!output.Succeeded) {
             return null;
-        }
-
-        return this.mapper.Map<UserRegisteredDto>(userEntity);
+        }       
+        
+        return this.mapper.Map<UserRegisteredDto>(user);
     }
 
     public async Task<UserAuthenticatedDto> Login(LoginCredentialsDto loginDto) 
@@ -86,8 +85,9 @@ public class UserService : IUserService
             return null;
         }        
         
-        string token = tokenService.CreateToken(userDBRecord);
-        UserAuthenticatedDto dto = new UserAuthenticatedDto(userDBRecord.Id, loginDto.UserName, token);
+        var userRoles = await this.userRepository.GetUserRoles(userDBRecord);
+        string token = tokenService.CreateToken(userDBRecord.UserName, userRoles);
+        UserAuthenticatedDto dto = new UserAuthenticatedDto(loginDto.UserName, token);
         return dto;
     }
 

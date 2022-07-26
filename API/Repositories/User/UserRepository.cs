@@ -11,43 +11,51 @@ namespace API.Repositories;
 
 public interface IUserRespository
 {
-    Task<IdentityResult> Create(UserEntity entity, string password);
-    Task<UserEntity> FindByUsername(string username);
-    Task<List<UserEntity>> FetchAll();
-
-     Task<SignInResult> CheckPassword(UserEntity userEntity, string password);
+    Task<IdentityResult> Create(IdentityUser user, string password);
+    Task<IdentityUser> FindByUsername(string username);
+    Task<List<IdentityUser>> FetchAll();
+    Task<SignInResult> CheckPassword(IdentityUser identityUser, string password);
+    Task<IList<string>> GetUserRoles(IdentityUser identityUser);
 }
 
-public class UserRepository: IUserRespository
-{    
-    protected readonly TUDataContext dataContext;    
+public class UserRepository : IUserRespository
+{
+    protected readonly TUDataContext dataContext;
 
-    protected readonly UserManager<UserEntity> userManager;
-    protected readonly  SignInManager<UserEntity> signinManager;
+    protected readonly UserManager<IdentityUser> userManager;
+    protected readonly SignInManager<IdentityUser> signinManager;
 
     public UserRepository(TUDataContext dataContext,
-                        UserManager<UserEntity> userManager,
-                        SignInManager<UserEntity> signinManager)
+                        UserManager<IdentityUser> userManager,
+                        SignInManager<IdentityUser> signinManager)
     {
-        this.dataContext = dataContext;        
+        this.dataContext = dataContext;
         this.userManager = userManager;
         this.signinManager = signinManager;
     }
 
-    public Task<IdentityResult> Create(UserEntity entity, string password) 
+    public Task<IdentityResult> Create(IdentityUser identityUser, string password)
     {
-        return this.userManager.CreateAsync(entity, password);
+        return this.userManager.CreateAsync(identityUser, password);
     }
 
-    public Task<UserEntity> FindByUsername(string username) {        
+    public Task<IdentityUser> FindByUsername(string username)
+    {
         return this.userManager.Users.FirstOrDefaultAsync(user => user.UserName == username);
     }
 
-    public Task<List<UserEntity>> FetchAll() {
+    public Task<List<IdentityUser>> FetchAll()
+    {
         return this.dataContext.Users.ToListAsync();
     }
 
-    public Task<SignInResult> CheckPassword(UserEntity userEntity, string password) {
-        return this.signinManager.CheckPasswordSignInAsync(userEntity, password, false);
+    public Task<SignInResult> CheckPassword(IdentityUser identityUser, string password)
+    {
+        return this.signinManager.CheckPasswordSignInAsync(identityUser, password, false);
+    }
+
+    public Task<IList<string>> GetUserRoles(IdentityUser identityUser)
+    {
+        return this.userManager.GetRolesAsync(identityUser);
     }
 }

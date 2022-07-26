@@ -6,15 +6,8 @@ using System.Threading.Tasks;
 
 namespace API.Dto;
 
-public class UserDto
+public class UserToRegisterDto
 {
-    public int Id { get; set; }
-    [Required]
-    public string FName { get; set; }    
-
-    [Required]
-    public string LName { get; set; }
-
     [Required]
     public string UserName { get; set; }                     
 

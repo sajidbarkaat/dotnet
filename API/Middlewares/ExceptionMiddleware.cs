@@ -14,30 +14,39 @@ public class ExceptionMiddleware
 
     private IHostEnvironment env;
 
-    public ExceptionMiddleware(RequestDelegate requestDelegate, ILogger<ExceptionMiddleware> logger, IHostEnvironment env) 
+    public ExceptionMiddleware(RequestDelegate requestDelegate, ILogger<ExceptionMiddleware> logger, IHostEnvironment env)
     {
         this.requestDelegate = requestDelegate;
         this.logger = logger;
         this.env = env;
     }
 
-    public async Task InvokeAsync(HttpContext httpContext) 
+    public async Task InvokeAsync(HttpContext httpContext)
     {
         try
         {
             await this.requestDelegate(httpContext);
         }
-        catch (Exception exception)        
+        catch (Exception error)
         {
-            this.logger.LogError(exception, exception.Message);
-            httpContext.Response.ContentType = "";
-            httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+            this.logger.LogError(error, error.Message);
+            var response = httpContext.Response;
+            response.ContentType = "application/json";
 
-            //StatusCode, Message, Details
-            var response = new { StatusCode = httpContext.Response.StatusCode, Message = "Internal Server Error"};
-            var options = new JsonSerializerOptions{PropertyNamingPolicy = JsonNamingPolicy.CamelCase};
-            var json = JsonSerializer.Serialize(response, options);
-            await httpContext.Response.WriteAsync(json);
+            switch (error)
+            {              
+                case KeyNotFoundException e:
+                    // not found error
+                    response.StatusCode = (int)HttpStatusCode.NotFound;
+                    break;
+                default:
+                    // unhandled error
+                    response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    break;
+            }
+
+            var result = JsonSerializer.Serialize(new { message = error?.Message });
+            await response.WriteAsync(result);
         }
-    }    
+    }
 }

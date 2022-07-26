@@ -8,22 +8,16 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data;
-public class TUDataContext: IdentityDbContext<
-                            UserEntity, 
-                            RoleEntity, 
-                            int, 
-                            IdentityUserClaim<int>, 
-                            UserRoleEntity, 
-                            IdentityUserLogin<int>,
-                            IdentityRoleClaim<int>,
-                            IdentityUserToken<int>>
+public class TUDataContext : IdentityDbContext<IdentityUser>
 {
     protected readonly IConfiguration Configuration;
-    public TUDataContext(IConfiguration configuration) {
+    public TUDataContext(IConfiguration configuration)
+    {
         this.Configuration = configuration;
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder options) {
+    protected override void OnConfiguring(DbContextOptionsBuilder options)
+    {
         options.UseSqlServer(Configuration.GetConnectionString("ApiDatabase"));
     }
 
@@ -31,16 +25,41 @@ public class TUDataContext: IdentityDbContext<
     {
         base.OnModelCreating(builder);
 
-        builder.Entity<UserEntity>()
-        .HasMany(userRole => userRole.UserRoles)
-        .WithOne(user => user.User)
-        .HasForeignKey(userRole => userRole.UserId)
-        .IsRequired();
+        string ADMIN_ID = Guid.NewGuid().ToString();
+        string ROLE_ID = Guid.NewGuid().ToString();
 
-        builder.Entity<RoleEntity>()
-        .HasMany(userRole => userRole.UserRoles)
-        .WithOne(user => user.Role)
-        .HasForeignKey(userRole => userRole.RoleId)
-        .IsRequired();
+        //seed admin role
+        builder.Entity<IdentityRole>().HasData(new IdentityRole
+        {
+            Name = "SuperAdmin",
+            NormalizedName = "SUPERADMIN",
+            Id = ROLE_ID,
+            ConcurrencyStamp = ROLE_ID
+        });
+
+        //create user
+        var appUser = new IdentityUser
+        {
+            Id = ADMIN_ID,
+            Email = "superadmin@email.com",
+            EmailConfirmed = true,            
+            UserName = "superadmin",
+            NormalizedUserName = "SUPERADMIN"
+        };
+
+        //set user password
+        PasswordHasher<IdentityUser> ph = new PasswordHasher<IdentityUser>();
+        appUser.PasswordHash = ph.HashPassword(appUser, "mypassword_?");
+
+        //seed user
+        builder.Entity<IdentityUser>().HasData(appUser);
+
+        //set user role to admin
+        builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+        {
+            RoleId = ROLE_ID,
+            UserId = ADMIN_ID
+        });
     }
 }
+

@@ -1,13 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+// using System;
+// using System.Collections.Generic;
+// using System.Linq;
+// using System.Threading.Tasks;
+// using Microsoft.AspNetCore.Identity;
 
-namespace API.Entities;
+// namespace API.Entities;
 
-public class RoleEntity : IdentityRole<int>
-{
-    public ICollection<UserRoleEntity> UserRoles { get; set; }
+// public class RoleEntity : IdentityRole<int>
+// {
+//     public ICollection<UserRoleEntity> UserRoles { get; set; }
 
-}
+// }

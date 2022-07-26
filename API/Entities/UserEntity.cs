@@ -9,15 +9,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Entities;
 
-[Table("Users")]
-public class UserEntity: IdentityUser<int>
+public class UserEntity
 {
     [Required]
-    public string FName { get; set; }    
-    
+    public string FName { get; set; }
+
     [Required]
     public string LName { get; set; }
 
-    public ICollection<UserRoleEntity> UserRoles { get; set; }
-    
+    [Required]
+    public string UserName { get; set; }
+
+    [Required]
+    public string Password { get; set; }
+
+    // public ICollection<UserRoleEntity> UserRoles { get; set; }
+
 }
